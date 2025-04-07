@@ -7,7 +7,7 @@ namespace Optimus.Cli;
 public static class ImageProcessor
 {
     public static async Task ProcessImages(
-        IEnumerable<FileInfo> imageFiles,
+        FileInfo imageFile,
         bool overwrite,
         string outputPath,
         int quality,
@@ -16,24 +16,17 @@ public static class ImageProcessor
     {
         try
         {
-            foreach (var imageFile in imageFiles)
+            if (!overwrite && FileExists(outputPath, imageFile.Name))
             {
-                if (!overwrite && FileExists(outputPath, imageFile.Name))
-                {
-                    Console.WriteLine($"Output Already Contains: {imageFile.Name}");
-                    continue;
-                }
-
-                using var image = await Image.LoadAsync(imageFile.OpenRead());
-
-                var fileName = Path.GetFileNameWithoutExtension(imageFile.FullName);
-                var extension = jpegFormat ? "jpeg" : Path.GetExtension(imageFile.FullName).ToLowerInvariant();
-
-                MutateImage(image, resizeOptions);
-
-                await image.SaveAsJpegAsync($"{outputPath}/{fileName}.{extension}",
-                    encoder: new JpegEncoder() { Quality = quality });
+                Console.WriteLine($"Output Already Contains: {imageFile.Name}");
+                return;
             }
+
+            using var image = await Image.LoadAsync(imageFile.OpenRead());
+
+            MutateImage(image, resizeOptions);
+
+            await image.SaveAsJpegAsync(outputPath, encoder: new JpegEncoder() { Quality = quality });
         }
         catch (Exception ex)
         {
@@ -41,6 +34,21 @@ public static class ImageProcessor
             throw new Exception("Failed to optimize images", ex);
         }
     }
+
+    public static async Task ProcessImages(
+        IEnumerable<FileInfo> imageFiles,
+        bool overwrite,
+        string outputPath,
+        int quality,
+        bool jpegFormat,
+        ResizeImageOptions? resizeOptions)
+    {
+        foreach (var imageFile in imageFiles)
+        {
+            await ProcessImages(imageFile, overwrite, outputPath, quality, jpegFormat, resizeOptions);
+        }
+    }
+
 
     private static void MutateImage(Image image, ResizeImageOptions? resizeOptions)
     {
