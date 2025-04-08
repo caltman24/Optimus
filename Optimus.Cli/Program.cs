@@ -29,8 +29,8 @@ app.AddCommand(async (CommonParameters commonParameters,
 
     PrintPaths(inputPath, outputPath);
 
-    Console.WriteLine($"Optimizing Image...");
     Console.WriteLine($"Quality: {commonParameters.Quality}");
+    Console.WriteLine($"Optimizing Image...");
     await ImageProcessor.ProcessImages(
         new FileInfo(inputPath),
         commonParameters.Overwrite,
@@ -68,8 +68,8 @@ app.AddCommand("dir", async (CommonParameters commonParameters,
 
     DirHelper.CreateDirectoryIfNotExists(inputPath, outputPath);
 
-    Console.WriteLine($"Optimizing Images...");
     Console.WriteLine($"Quality: {commonParameters.Quality}");
+    Console.WriteLine($"Optimizing Images...");
 
     await ImageProcessor.ProcessImages(
         imageFiles,

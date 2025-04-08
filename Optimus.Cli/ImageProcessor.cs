@@ -45,7 +45,12 @@ public static class ImageProcessor
     {
         foreach (var imageFile in imageFiles)
         {
-            await ProcessImages(imageFile, overwrite, outputPath, quality, jpegFormat, resizeOptions);
+            await ProcessImages(imageFile,
+                overwrite,
+                $"{outputPath}/{imageFile.Name}{imageFile.Extension.ToLowerInvariant()}",
+                quality,
+                jpegFormat,
+                resizeOptions);
         }
     }
 
