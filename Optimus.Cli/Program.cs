@@ -54,7 +54,7 @@ app.AddCommand("dir", async (CommonParameters commonParameters,
 
     var inputPath = DirHelper.ProcessRootPath(Directory.GetCurrentDirectory(), input);
     var outputPath =
-        DirHelper.ProcessRootPath(Directory.GetCurrentDirectory(), output ?? inputPath + "/optimus-output");
+        DirHelper.ProcessRootPath(Directory.GetCurrentDirectory(), output ?? Directory.GetCurrentDirectory() + "/optimus-output");
 
     PrintPaths(inputPath, outputPath);
 
